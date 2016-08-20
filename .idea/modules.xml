@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FileManager.iml" filepath="$PROJECT_DIR$/.idea/modules/FileManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FileManager_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FileManager_main.iml" group="FileManager" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FileManager_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FileManager_test.iml" group="FileManager" />
+      <module fileurl="file://$PROJECT_DIR$/park-file-manager.iml" filepath="$PROJECT_DIR$/park-file-manager.iml" />
+    </modules>
+  </component>
+</project>

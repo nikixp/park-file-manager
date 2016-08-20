@@ -1,0 +1,50 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Gradle : filemanager-0.0.1-SNAPSHOT.war (exploded)">
+    <output-path>$PROJECT_DIR$/out/artifacts/FileManager/exploded/filemanager-0.0.1-SNAPSHOT.war</output-path>
+    <properties id="gradle-properties">
+      <options external-project-path="$PROJECT_DIR$/FileManager" />
+    </properties>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="FileManager_main/web/Web Gradle : filemanager-0.0.1-SNAPSHOT.war" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="FileManager_main" />
+          <element id="dir-copy" path="$PROJECT_DIR$/FileManager/build/resources/main" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-web/1.4.0.RELEASE/bcefa854b75a7e0bcf612bfbe030bdcb05c9da82/spring-boot-starter-web-1.4.0.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-jasper/8.5.4/7e0806d45043f6bd0b71caa753219c2ab92d23ee/tomcat-embed-jasper-8.5.4.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter/1.4.0.RELEASE/9eb9be27958cc17de9673a6fbbdaf16fb65a7fdc/spring-boot-starter-1.4.0.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-validator/5.2.4.Final/fb18766b576aa6632bcfe9a20a023cbd52bf9769/hibernate-validator-5.2.4.Final.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.8.1/c04eb2cc599cd1742889bfa7cc41878db0d152f5/jackson-databind-2.8.1.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/4.3.2.RELEASE/562b3b775b6e8e7113b5d23b21946f939658bd19/spring-web-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-webmvc/4.3.2.RELEASE/99b68a8aca2ed67ad523e7341a90dd1c90fd669e/spring-webmvc-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt.core.compiler/ecj/4.5.1/bee1367ac12fb6a20b422ff8711ebeb4f0a42316/ecj-4.5.1.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot/1.4.0.RELEASE/3b4ea475b40eb9dc966fb3c650c97bfabb988f9/spring-boot-1.4.0.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-autoconfigure/1.4.0.RELEASE/9fa1ac16ac6fd96d7df2c72b55ba9814be082ffc/spring-boot-autoconfigure-1.4.0.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-logging/1.4.0.RELEASE/53303110c92c921e09e1c9bc8b9bf4c1935c2f12/spring-boot-starter-logging-1.4.0.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.3.2.RELEASE/fd2f3cf45d3c84f293cb7ee3ab7d24c979495552/spring-core-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.17/7a27ea250c5130b2922b86dea63cbb1cc10a660c/snakeyaml-1.17.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.validation/validation-api/1.1.0.Final/8613ae82954779d518631e05daa73a6a954817d5/validation-api-1.1.0.Final.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jboss.logging/jboss-logging/3.3.0.Final/3616bb87707910296e2c195dc016287080bba5af/jboss-logging-3.3.0.Final.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.3.1/2ad2fd09dcf5607ca96f8ef432096a96986c40a/classmate-1.3.1.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.8.1/4465fda9834ab27eac2a76f9a378738d15a9b4fa/jackson-annotations-2.8.1.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.8.1/fd13b1c033741d48291315c6370f7d475a42dccf/jackson-core-2.8.1.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/4.3.2.RELEASE/caef216e995f565dd4ab165ec5918ff44487615d/spring-aop-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.3.2.RELEASE/9e87f48f65a33a017f2dd027911947a28be29f93/spring-beans-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.3.2.RELEASE/e52782b824e097c3b1586b497fc6be0e95020770/spring-context-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/4.3.2.RELEASE/7676acd4dde9d186b7f882edce3131dc62dcb590/spring-expression-4.3.2.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.1.7/9865cf6994f9ff13fce0bf93f2054ef6c65bb462/logback-classic-1.1.7.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.7.21/331b564a3a42f002a0004b039c1c430da89062cd/jcl-over-slf4j-1.7.21.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/jul-to-slf4j/1.7.21/2f22c882ffa479d1e9ff4eb0e8e2c29f2a0871ed/jul-to-slf4j-1.7.21.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/log4j-over-slf4j/1.7.21/b3700d97464d99bdcd42c0177d6e7951c94d75ff/log4j-over-slf4j-1.7.21.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.7/7873092d39ef741575ca91378a6a21c388363ac8/logback-core-1.1.7.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.21/139535a69a4239db087de9bab0bee568bf8e0b70/slf4j-api-1.7.21.jar" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/FileManager/exploded/filemanager-0.0.1-SNAPSHOT.war/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

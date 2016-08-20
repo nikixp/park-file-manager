@@ -1,0 +1,66 @@
+
+body , table
+{
+    font-family: 돋움;
+    font-size:  12px;
+}
+
+table.file-table
+{
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(238, 238, 238);
+    border-collapse: collapse;
+}
+
+table.file-table > thead , tbody , tr , th , td
+{
+    border-collapse: collapse;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(238, 238, 238);
+}
+
+table.file-table > thead > tr
+{
+    height: 30px;
+    background-color: #889CB3;
+}
+
+table.file-table > thead > tr > th
+{
+    color: #ffffff;
+    font-family: 돋움;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 10px;
+}
+
+table.file-table > tbody > tr
+{
+    height: 25px;
+}
+
+table.file-table > tbody > tr > td
+{
+    padding-left: 5px;
+}
+
+table.file-table td.file-name
+{
+    cursor: hand;
+}
+
+/*
+table.file-table > tbody > tr > td:nth-child(2)
+{
+    cursor: hand;
+}
+*/
+
+
+tr.even-class
+{
+    background-color: rgb(249, 249, 249);
+}
+
