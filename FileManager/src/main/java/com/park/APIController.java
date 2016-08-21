@@ -2,9 +2,11 @@ package com.park;
 
 import com.park.domains.NativeFile;
 import com.park.domains.Status;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +64,7 @@ public class APIController {
     }
 
     @RequestMapping(path = "/api/child" , method = RequestMethod.POST)
-    public @ResponseBody Status goChild(HttpSession session , @RequestParam(value = "directory" , required = true) String directory)
+    public @ResponseBody Status goChild(HttpSession session , @RequestParam(value = "directory") String directory)
     {
         String currentPath = (String)session.getAttribute("current_path");
 
@@ -99,10 +102,25 @@ public class APIController {
         return retn;
     }
 
-    @RequestMapping(path = "/api/download" , method = RequestMethod.POST)
-    public void download(@RequestParam(value = "name" , required = true) String name, HttpSession session, HttpServletResponse response) throws Exception
+    @RequestMapping(path = "/api/delete" , method = RequestMethod.POST)
+    public @ResponseBody boolean delete(@RequestParam(value = "files") List<String> names, HttpSession session)
     {
-        String currentPath = (String) session.getAttribute("current_path");
+        String currentPath = (String)session.getAttribute("current_path");
+
+        names.stream().forEach((String name) -> {
+            String path = currentPath + FileSystems.getDefault().getSeparator() + name;
+
+            File file = new File(path);
+            file.delete();
+        });
+
+        return true;
+    }
+
+    @RequestMapping(path = "/api/download" , method = RequestMethod.POST)
+    public @ResponseBody boolean download(@RequestParam(value = "name") String name, HttpSession session, HttpServletResponse response) throws Exception
+    {
+        String currentPath = (String)session.getAttribute("current_path");
 
         File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
 
@@ -120,20 +138,22 @@ public class APIController {
 
         fis.close();
         out.flush();
+
+        return true;
     }
 
     @RequestMapping(path = "/api/upload" , method = RequestMethod.POST)
-    public @ResponseBody boolean upload(@RequestParam(value = "file" , required = true) MultipartFile file, HttpSession session) throws Exception
+    public @ResponseBody boolean upload(@RequestParam(value = "file") MultipartFile file, HttpSession session) throws Exception
     {
-        String fileName = (String) session.getAttribute("current_path") + FileSystems.getDefault().getSeparator() + file.getOriginalFilename();
+        String fileName = FilenameUtils.getName(file.getOriginalFilename());
+        String path = session.getAttribute("current_path") + FileSystems.getDefault().getSeparator() + fileName;
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(file.getBytes());
-        FileOutputStream outputStream = new FileOutputStream(fileName);
+        FileOutputStream outputStream = new FileOutputStream(path);
         FileCopyUtils.copy(inputStream , outputStream);
 
         inputStream.close();
         outputStream.flush();
-
         return true;
     }
 

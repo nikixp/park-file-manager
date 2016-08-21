@@ -34,7 +34,7 @@
                     newRow.data("isFile" , item.isFile);
 
 
-                    var checkBox = $("<input type='checkbox'>");
+                    var checkBox = $("<input name='select' type='checkbox'>");
 
                     newRow.find("td:nth-child(1)").append(checkBox);
 
@@ -104,6 +104,21 @@
                 $.post("./api/home" , getStatusCompleteHandler);
             });
 
+            $("#btn-delete").click(function(event){
+
+                if(!confirm("Do you want delete?")) return;
+
+                var files = [];
+
+                $("table.file-table input[name='select']:checked").each(function(index , checkbox){
+
+                    files.push($(checkbox).parent().parent().data('name'));
+                });
+
+                $.post("./api/delete" , {"files":files.toString()} , function(event){
+                    $.post("./api/reload" , getStatusCompleteHandler);
+                });
+            });
 
             $("#form-upload").submit(function(event){
                 $.ajax({
@@ -115,6 +130,7 @@
                     processData: false,
                     data: new FormData(this),
                     success:function(event){
+                        alert('upload success.')
                         $.post("./api/reload" , getStatusCompleteHandler);
                     }
                 });
@@ -141,10 +157,10 @@
 
         <thead>
             <th style="width: 20px"></th>
-            <th style="width: 200px">이름</th>
-            <th style="width: 50px">크기</th>
-            <th style="width: 50px">유형</th>
-            <th style="width: 100px">날짜</th>
+            <th style="width: 200px">Name</th>
+            <th style="width: 50px">Size</th>
+            <th style="width: 50px">Type</th>
+            <th style="width: 100px">Date</th>
         </thead>
         <tbody>
 
@@ -155,18 +171,20 @@
     </table>
 
     <br>
-    <input id="btn-home" type="button" value="홈">
-    <input id="btn-parent" type="button" value="상위폴더">
+    <input id="btn-home" type="button" value="Home">
+    <input id="btn-parent" type="button" value="Go Parent">
+    <input id="btn-delete" type="button" value="Delete">
     <br>
 
     <form id="form-upload" action="./api/upload" method="post" target="temp-frame" enctype="multipart/form-data">
         <input type="file" name="file">
-        <input type="submit" value="업로드">
+        <input type="submit" value="Upload">
     </form>
+
     </div>
     <br>
     제작자 : 박근영<br>
-    본 프로그램은 GPL v3 라이센스의 보호받고 있습니다.
+    본 프로그램은 GPL v3 라이센스의 보호를 받고 있습니다.
 
     <form id="form-download" action="./api/download" method="post" style="display: none" target="temp-frame">
         <input type="text" name="name">

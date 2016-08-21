@@ -6,19 +6,16 @@ Web File Manager
 현재 사용 기능
 - 파일 업로드
 - 파일 다운로드
-- 홈 이동
-- 상위폴더 이동
-- 하의폴더 이동
+- 파일 삭제
+- 홈/상위/하위 폴더 이동
 
 - file upload
 - file download
-- go home
-- go parent directory
-- go child directory
+- delete
+- go home/parent/child directory
 
-
-개발 환경
-- IntelliJ 프로젝트
+개발환경
+- IntelliJ
 - Gradle
 - Spring Boot 1.4
 - Spring Web 4.3.2
@@ -26,3 +23,5 @@ Web File Manager
 - jquery 3.1
 - Tomcat 8.5.4
 - War deploy
+
+http://localhost:8080/file/
