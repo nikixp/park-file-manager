@@ -29,7 +29,7 @@
 
                 data.files.sort(function(item1 , item2){return item1.isFile - item2.isFile;}).forEach(function(item){
 
-                    var newRow = $("<tr><td></td><td></td><td></td><td></td><td></td></tr>");
+                    var newRow = $("<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>");
                     newRow.data("name" , item.name);
                     newRow.data("isFile" , item.isFile);
 
@@ -57,7 +57,6 @@
 
                     newRow.find("td:nth-child(2)").attr("class" , "file-name");
                     newRow.find("td:nth-child(2)").append(itemName);
-                    //newRow.find("td:nth-child(2)").data("directory" , itemName);
                     newRow.find("td:nth-child(2)").click(function(event){
 
                         //alert( $(event.currentTarget).parent().data("isFile") );
@@ -89,6 +88,20 @@
 
 
                     newRow.find("td:nth-child(3)").html(item.length);
+
+                    var renameBtn = $("<input type='button' value='Rename'>");
+
+                    renameBtn.click(function(event){
+
+                        //popup-input
+                        $("#popup").show();
+                        //$("#popup-input").
+
+                    });
+
+                    //popup-input
+
+                    newRow.find("td:nth-child(6)").append(renameBtn);
 
                     $("table.file-table > tbody").append(newRow);
                 });
@@ -138,6 +151,11 @@
                 event.preventDefault();
             });
 
+
+            $("#btn-popup-cancel").click(function(event){
+               $("#popup").hide();
+            });
+
             $.post("./api/home" , getStatusCompleteHandler);
         });
 
@@ -161,6 +179,7 @@
             <th style="width: 50px">Size</th>
             <th style="width: 50px">Type</th>
             <th style="width: 100px">Date</th>
+            <th style="width: 100px"></th>
         </thead>
         <tbody>
 
@@ -189,6 +208,25 @@
     <form id="form-download" action="./api/download" method="post" style="display: none" target="temp-frame">
         <input type="text" name="name">
     </form>
+
+    <div id="popup" class="popup" style="position: absolute;top: 0px;left: 0px;width: 100%;height: 100%;display: none">
+        <div style="width: 100%;height: 100%;background-color: black;opacity: 0.4"></div>
+
+        <div id="popup-input" style="left: 0px;top: 0px;width: 300px;height: 100px;background-color: #e2e2e2;position: absolute">
+            <div class="popup-title">
+                <span>입력</span>
+            </div>
+            <div class="popup-content">
+                <input type="text" style="width: 100%">
+                <br>
+                <div style="text-align: center;padding-top: 10px">
+                    <input type="button" style="width: 70px" value="OK">
+                    <input id="btn-popup-cancel" type="button" style="width: 70px" value="Cancel">
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <iframe name="temp-frame" style="display: none"></iframe>
 
