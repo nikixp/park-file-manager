@@ -117,6 +117,18 @@ public class APIController {
         return true;
     }
 
+    @RequestMapping(path = "/api/rename" , method = RequestMethod.POST)
+    public @ResponseBody boolean rename(@RequestParam(value = "name") String name, @RequestParam(value = "newName") String newName, HttpSession session)
+    {
+        String currentPath = (String)session.getAttribute("current_path");
+        File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+
+        assert file.exists();
+
+        file.renameTo(new File(currentPath + FileSystems.getDefault().getSeparator() + newName));
+        return true;
+    }
+
     @RequestMapping(path = "/api/download" , method = RequestMethod.POST)
     public @ResponseBody boolean download(@RequestParam(value = "name") String name, HttpSession session, HttpServletResponse response) throws Exception
     {
@@ -124,7 +136,7 @@ public class APIController {
 
         File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
 
-        assert file.exists() == true;
+        assert file.exists();
 
         String fileName = URLEncoder.encode(file.getName() , "utf-8").replaceAll("\\+" , "%20");
 

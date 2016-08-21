@@ -95,8 +95,14 @@
 
                         //popup-input
                         $("#popup").show();
-                        //$("#popup-input").
 
+
+                        var name = $(event.currentTarget).parent().parent().data("name");
+
+                        $("#popup").data("cmd" , "rename");
+                        $("#popup").data("target" , name);
+
+                        $("#popup-input-text").val(name);
                     });
 
                     //popup-input
@@ -129,6 +135,7 @@
                 });
 
                 $.post("./api/delete" , {"files":files.toString()} , function(event){
+                    alert('Delete success.');
                     $.post("./api/reload" , getStatusCompleteHandler);
                 });
             });
@@ -143,7 +150,7 @@
                     processData: false,
                     data: new FormData(this),
                     success:function(event){
-                        alert('upload success.')
+                        alert('Upload success.');
                         $.post("./api/reload" , getStatusCompleteHandler);
                     }
                 });
@@ -151,6 +158,23 @@
                 event.preventDefault();
             });
 
+            $("#btn-popup-ok").click(function(event){
+                $("#popup").hide();
+
+                switch($("#popup").data("cmd"))
+                {
+                    case "rename":
+                        $.post("./api/rename" , {"name":$("#popup").data("target"), "newName":$("#popup-input-text").val()} , function(event){
+                            alert('Rename success.')
+                            $.post("./api/reload" , getStatusCompleteHandler);
+                        });
+                        break;
+                }
+
+                //$("#popup").data("cmd" , "rename");
+                //$("#popup").data("target" , name);
+
+            });
 
             $("#btn-popup-cancel").click(function(event){
                $("#popup").hide();
@@ -212,15 +236,15 @@
     <div id="popup" class="popup" style="position: absolute;top: 0px;left: 0px;width: 100%;height: 100%;display: none">
         <div style="width: 100%;height: 100%;background-color: black;opacity: 0.4"></div>
 
-        <div id="popup-input" style="left: 0px;top: 0px;width: 300px;height: 100px;background-color: #e2e2e2;position: absolute">
+        <div id="popup-input" style="left: 50%;top: 50%;width: 300px;height: 100px;margin-left: -150px;margin-top: -50px;background-color: #e2e2e2;position: absolute">
             <div class="popup-title">
                 <span>입력</span>
             </div>
             <div class="popup-content">
-                <input type="text" style="width: 100%">
+                <input id="popup-input-text" type="text" style="width: 100%">
                 <br>
                 <div style="text-align: center;padding-top: 10px">
-                    <input type="button" style="width: 70px" value="OK">
+                    <input id="btn-popup-ok" type="button" style="width: 70px" value="OK">
                     <input id="btn-popup-cancel" type="button" style="width: 70px" value="Cancel">
                 </div>
             </div>
