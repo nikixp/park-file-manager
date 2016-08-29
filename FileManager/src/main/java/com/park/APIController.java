@@ -2,6 +2,7 @@ package com.park;
 
 import com.park.domains.NativeFile;
 import com.park.domains.Status;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -58,7 +59,7 @@ public class APIController {
         File file = new File(currentPath);
 
         Status retn = new Status();
-        retn.setIsRoot(true);
+        retn.setIsRoot(documentHome.equals(currentPath));
         retn.setFiles(getChildFiles(file));
         return retn;
     }
@@ -111,7 +112,19 @@ public class APIController {
             String path = currentPath + FileSystems.getDefault().getSeparator() + name;
 
             File file = new File(path);
-            file.delete();
+
+            try
+            {
+                if(file.isFile())
+                    file.delete();
+                else
+                    FileUtils.deleteDirectory(file);
+            }
+            catch (IOException ex)
+            {
+
+            }
+
         });
 
         return true;
@@ -126,6 +139,17 @@ public class APIController {
         assert file.exists();
 
         file.renameTo(new File(currentPath + FileSystems.getDefault().getSeparator() + newName));
+        return true;
+    }
+
+    @RequestMapping(path = "/api/createFolder" , method = RequestMethod.POST)
+    public @ResponseBody boolean createFolder(@RequestParam(value = "name") String name, HttpSession session) throws Exception
+    {
+        String currentPath = (String)session.getAttribute("current_path");
+
+        File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+
+        file.mkdir();
         return true;
     }
 
@@ -166,6 +190,69 @@ public class APIController {
 
         inputStream.close();
         outputStream.flush();
+        return true;
+    }
+
+    @RequestMapping(path = "/api/copy" , method = RequestMethod.POST)
+    public @ResponseBody boolean copy(@RequestParam(value = "files") List<String> names, HttpSession session)
+    {
+        String currentPath = (String)session.getAttribute("current_path");
+
+        session.setAttribute("command" , "copy");
+        session.setAttribute("source_path" , currentPath);
+        session.setAttribute("names" , names);
+        return true;
+    }
+
+
+    @RequestMapping(path = "/api/move" , method = RequestMethod.POST)
+    public @ResponseBody boolean move(@RequestParam(value = "files") List<String> names, HttpSession session)
+    {
+        String currentPath = (String)session.getAttribute("current_path");
+
+        session.setAttribute("command" , "move");
+        session.setAttribute("source_path" , currentPath);
+        session.setAttribute("names" , names);
+        return true;
+    }
+
+    @RequestMapping(path = "/api/paste" , method = RequestMethod.POST)
+    public @ResponseBody boolean paste(HttpSession session) throws Exception
+    {
+        String currentPath = (String)session.getAttribute("current_path");
+        String sourcePath = (String)session.getAttribute("source_path");
+        String command = (String)session.getAttribute("command");
+
+        List<String> names = (List<String>)session.getAttribute("names");
+
+        for(String name : names)
+        {
+            File sourceFile = new File(sourcePath + FileSystems.getDefault().getSeparator() + name);
+
+
+            if(sourceFile.isFile())
+            {
+                File targetFile = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+
+                if("copy".equals(command))
+                    FileUtils.copyFile(sourceFile , targetFile);
+                else if("move".equals(command))
+                    FileUtils.moveFile(sourceFile , targetFile);
+            }
+            else
+            {
+                File targetPath = new File(currentPath);
+
+                if("copy".equals(command))
+                    FileUtils.copyDirectoryToDirectory(sourceFile , targetPath);
+                else if("move".equals(command))
+                    FileUtils.moveDirectoryToDirectory(sourceFile , targetPath , true);
+            }
+
+
+        }
+
+
         return true;
     }
 

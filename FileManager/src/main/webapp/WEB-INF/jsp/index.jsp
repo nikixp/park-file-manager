@@ -1,9 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
-  User: com
+  User: park
   Date: 2016-08-11
   Time: 오후 6:26
-  To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -123,6 +122,44 @@
                 $.post("./api/home" , getStatusCompleteHandler);
             });
 
+
+            $("#btn-copy").click(function(event){
+
+                var files = [];
+
+                $("table.file-table input[name='select']:checked").each(function(index , checkbox){
+
+                    files.push($(checkbox).parent().parent().data('name'));
+                });
+
+                $.post("./api/copy" , {"files":files.toString()} );
+            });
+
+            $("#btn-move").click(function(event){
+
+                var files = [];
+
+                $("table.file-table input[name='select']:checked").each(function(index , checkbox){
+
+                    files.push($(checkbox).parent().parent().data('name'));
+                });
+
+                $.post("./api/move" , {"files":files.toString()} );
+            });
+
+            $("#btn-paste").click(function(event){
+
+                $('html, body').css("cursor", "wait");
+
+                $.post("./api/paste" , function(event){
+                    alert('completed');
+
+                    $('html, body').css("cursor", "auto");
+
+                    $.post("./api/reload" , getStatusCompleteHandler);
+                });
+            });
+
             $("#btn-delete").click(function(event){
 
                 if(!confirm("Do you want delete?")) return;
@@ -158,6 +195,17 @@
                 event.preventDefault();
             });
 
+
+            //btn-addfolder
+            $("#btn-addfolder").click(function(event){
+
+                $("#popup").show();
+
+                $("#popup").data("cmd" , "createFolder");
+                $("#popup-input-text").val("");
+
+            });
+
             $("#btn-popup-ok").click(function(event){
                 $("#popup").hide();
 
@@ -168,6 +216,13 @@
                             alert('Rename success.')
                             $.post("./api/reload" , getStatusCompleteHandler);
                         });
+                        break;
+                    case "createFolder":
+                        $.post("./api/createFolder" , {"name":$("#popup-input-text").val()} , function(event){
+                            alert('Folder created.')
+                            $.post("./api/reload" , getStatusCompleteHandler);
+                        });
+                        break;
                         break;
                 }
 
@@ -217,6 +272,11 @@
     <input id="btn-home" type="button" value="Home">
     <input id="btn-parent" type="button" value="Go Parent">
     <input id="btn-delete" type="button" value="Delete">
+    <input id="btn-addfolder" type="button" value="Add Folder">
+    <input id="btn-copy" type="button" value="Copy">
+    <input id="btn-move" type="button" value="Move">
+    <input id="btn-paste" type="button" value="Paste">
+    <br>
     <br>
 
     <form id="form-upload" action="./api/upload" method="post" target="temp-frame" enctype="multipart/form-data">
@@ -236,14 +296,14 @@
     <div id="popup" class="popup" style="position: absolute;top: 0px;left: 0px;width: 100%;height: 100%;display: none">
         <div style="width: 100%;height: 100%;background-color: black;opacity: 0.4"></div>
 
-        <div id="popup-input" style="left: 50%;top: 50%;width: 300px;height: 100px;margin-left: -150px;margin-top: -50px;background-color: #e2e2e2;position: absolute">
+        <div id="popup-input" style="left: 50%;top: 50%;width: 300px;height: 150px;margin-left: -150px;margin-top: -75px;background-color: #e2e2e2;position: absolute">
             <div class="popup-title">
                 <span>입력</span>
             </div>
             <div class="popup-content">
                 <input id="popup-input-text" type="text" style="width: 100%">
                 <br>
-                <div style="text-align: center;padding-top: 10px">
+                <div style="text-align: center;padding-top: 30px">
                     <input id="btn-popup-ok" type="button" style="width: 70px" value="OK">
                     <input id="btn-popup-cancel" type="button" style="width: 70px" value="Cancel">
                 </div>

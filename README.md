@@ -6,14 +6,14 @@ Web File Manager
 현재 사용 기능
 - 파일 업로드
 - 파일 다운로드
-- 이름 변경
-- 파일 삭제
+- 파일 복사/이동/붙여넣기/삭제/이름변경
+- 폴더 생성
 - 홈/상위/하위 폴더 이동
 
 - file upload
 - file download
-- delete
-- rename
+- file copy/move/paste/delete/rename
+- new folder
 - go home/parent/child directory
 
 개발환경
