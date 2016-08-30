@@ -33,28 +33,28 @@
                     newRow.data("isFile" , item.isFile);
 
 
-                    var checkBox = $("<input name='select' type='checkbox'>");
 
+                    // CheckBox
+                    var checkBox = $("<input name='select' type='checkbox'>");
                     newRow.find("td:nth-child(1)").append(checkBox);
 
-
+                    // FileName
                     var itemImage = $("<img>");
-
 
                     if(item.isFile == false)
                         itemImage.attr("src" , "./image/folder.png");
                     else
                         itemImage.attr("src" , "./image/file.png");
 
-
                     newRow.find("td:nth-child(2)").append(itemImage);
 
 
                     var itemName = $("<span style='padding-left: 5px'></span>");
                     itemName.html(item.name);
-                    //itemName.css("cursor" , "hand");
+
 
                     newRow.find("td:nth-child(2)").attr("class" , "file-name");
+                    newRow.find("td:nth-child(2)").attr("isFile" , item.isFile);
                     newRow.find("td:nth-child(2)").append(itemName);
                     newRow.find("td:nth-child(2)").click(function(event){
 
@@ -71,25 +71,17 @@
                         {
                            $.post("./api/child" , {"directory":name} , getStatusCompleteHandler);
                         }
-                        else
-                        {
-                            $("#form-download > input[name='name']").attr("value" , name);
-                            //$("#form-download-name").attr("value" , name);
-
-                            $("#form-download").submit();
-                            //form-download.tar
-                            //form-download
-                        }
 
                        //$.post("./api/child" , {"directory":$(event.currentTarget).data("directory")} , getStatusCompleteHandler);
                        //$.post("./api/child" , {"directory":directory} , getStatusCompleteHandler);
                     });
 
+                    //Size
+                    if(item.isFile)
+                        newRow.find("td:nth-child(3)").html(item.length);
 
-                    newRow.find("td:nth-child(3)").html(item.length);
-
+                    //Tool buttons
                     var renameBtn = $("<input type='button' value='Rename'>");
-
                     renameBtn.click(function(event){
 
                         //popup-input
@@ -103,10 +95,24 @@
 
                         $("#popup-input-text").val(name);
                     });
-
-                    //popup-input
-
                     newRow.find("td:nth-child(6)").append(renameBtn);
+
+
+                    var downBtn = $("<input type='button' value='Download'>");
+
+                    if(item.isFile == false)
+                        downBtn.css("visibility" , "hidden");
+
+                    downBtn.click(function(event){
+                        var name = $(event.currentTarget).parent().parent().data("name");
+                        $("#form-download > input[name='name']").attr("value" , name);
+                        $("#form-download").submit();
+                    });
+
+
+
+                    newRow.find("td:nth-child(6)").append(downBtn);
+
 
                     $("table.file-table > tbody").append(newRow);
                 });
@@ -170,6 +176,12 @@
 
                     files.push($(checkbox).parent().parent().data('name'));
                 });
+
+                if(files.length == 0)
+                {
+                    alert("No selected file.")
+                    return;
+                }
 
                 $.post("./api/delete" , {"files":files.toString()} , function(event){
                     alert('Delete success.');
