@@ -11,7 +11,7 @@
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="Cache-Control" content="no-cache">
 <head>
-    <title>:: 파일 탐색기 1.0::</title>
+    <title>:: 파일 탐색기 1.1::</title>
     <link rel="stylesheet" type="text/css" href="./css/default.css">
     <script src="./js/jquery/jquery-3.1.0.min.js"></script>
     <script type="text/javascript">
@@ -28,17 +28,19 @@
                 return Math.floor(parseFloat((bytes / Math.pow(k, i)).toFixed(dm))) + sizes[i];
             }
 
-//            $("div.toolbar-button").mouseover(function(){
-//                $(this).css("background-color" , "#545657");
-//            }).mouseout(function(){
-//                $(this).css("background-color" , "#2B2B2B");
-//            });
+            $("#top-toolbar-container").append( $("#toolbar").clone() );
 
             function getStatusCompleteHandler(data)
             {
                 $("table.file-table > tbody > tr").remove();
 
-                $("input.btn-parent").attr("disabled" , data.isRoot);
+
+                if(data.isRoot)
+                    $(".btn-parent").css("display" , "none");
+                else
+                    $(".btn-parent").css("display" , "");
+
+
 
                 data.files.sort(function(item1 , item2){return item1.isFile - item2.isFile;}).forEach(function(item){
 
@@ -97,16 +99,16 @@
 
 
 
-            $("input.btn-parent").click(function(event){
+            $(".btn-parent").click(function(event){
                 $.post("./api/parent" , getStatusCompleteHandler);
             });
 
-            $("input.btn-home").click(function(event){
+            $(".btn-home").click(function(event){
                 $.post("./api/home" , getStatusCompleteHandler);
             });
 
 
-            $("input.btn-copy").click(function(event){
+            $(".btn-copy").click(function(event){
 
                 var files = [];
 
@@ -118,7 +120,7 @@
                 $.post("./api/copy" , {"files":files.toString()} );
             });
 
-            $("input.btn-move").click(function(event){
+            $(".btn-move").click(function(event){
 
                 var files = [];
 
@@ -130,7 +132,7 @@
                 $.post("./api/move" , {"files":files.toString()} );
             });
 
-            $("input.btn-paste").click(function(event){
+            $(".btn-paste").click(function(event){
 
                 $('html, body').css("cursor", "wait");
 
@@ -143,7 +145,7 @@
                 });
             });
 
-            $("input.btn-delete").click(function(event){
+            $(".btn-delete").click(function(event){
 
                 if(!confirm("Do you want delete?")) return;
 
@@ -186,7 +188,7 @@
 
 
             //btn-addfolder
-            $("input.btn-addfolder").click(function(event){
+            $(".btn-addfolder").click(function(event){
 
                 $("#popup").show();
 
@@ -239,14 +241,10 @@
 
     파일탐색기 1.1<br><br>
 
-    <br>
-    <input class="btn-home" type="button" value="Home">
-    <input class="btn-parent" type="button" value="Go Parent">
-    <input class="btn-delete" type="button" value="Delete">
-    <input class="btn-addfolder" type="button" value="Add Folder">
-    <input class="btn-copy" type="button" value="Copy">
-    <input class="btn-move" type="button" value="Move">
-    <input class="btn-paste" type="button" value="Paste">
+    <div id="top-toolbar-container" style="margin-bottom: 10px">
+
+    </div>
+
     <br>
 
     <table class="file-table" style="margin-top: 10px">
@@ -269,25 +267,36 @@
     </table>
 
     <br>
-    <div>
-            <div class="toolbar-button" style="">
+    <div id="toolbar">
+            <div class="toolbar-button btn-home">
                 <img src="/file/image/toolbar/home.png">
-                <span class="tooltip">Home</span>
+                <span>Home</span>
             </div>
-            <div class="toolbar-button" style="">
-                <img src="/file/image/toolbar/home.png">
-                <span class="tooltip">Parent</span>
+            <div class="toolbar-button btn-parent">
+                <img src="/file/image/toolbar/goparent.png">
+                <span>Go Parent</span>
+            </div>
+            <div class="toolbar-button btn-addfolder" style="margin-right: 10px">
+                <img src="/file/image/toolbar/addfolder.png">
+                <span>Add Folder</span>
+            </div>
+            <div class="toolbar-button btn-copy">
+                <img src="/file/image/toolbar/copy.png">
+                <span>Copy</span>
+            </div>
+            <div class="toolbar-button btn-move">
+                <img src="/file/image/toolbar/move.png">
+                <span>Move</span>
+            </div>
+            <div class="toolbar-button btn-paste">
+                <img src="/file/image/toolbar/paste.png">
+                <span>Paste</span>
+            </div>
+            <div class="toolbar-button btn-delete">
+                <img src="/file/image/toolbar/delete.png">
+                <span>Delete</span>
             </div>
     </div>
-    <br>
-    <br>
-    <input class="btn-home" type="button" value="Home">
-    <input class="btn-parent" type="button" value="Go Parent">
-    <input class="btn-delete" type="button" value="Delete">
-    <input class="btn-addfolder" type="button" value="Add Folder">
-    <input class="btn-copy" type="button" value="Copy">
-    <input class="btn-move" type="button" value="Move">
-    <input class="btn-paste" type="button" value="Paste">
     <br>
     <br>
 
