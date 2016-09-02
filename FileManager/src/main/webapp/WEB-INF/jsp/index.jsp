@@ -8,6 +8,7 @@
 
 <html>
 <meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
 <meta http-equiv="Cache-Control" content="no-cache">
 <head>
     <title>:: 파일 탐색기 1.0::</title>
@@ -20,140 +21,112 @@
             // Handler for .ready() called.
             //alert('ready2');
 
+            function formatBytes(bytes,decimals) {
+                if(bytes == 0) return '0 Byte';
+                var k = 1000; // or 1024 for binary
+                var dm = decimals + 1 || 3;
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                var i = Math.floor(Math.log(bytes) / Math.log(k));
+                return Math.floor(parseFloat((bytes / Math.pow(k, i)).toFixed(dm))) + sizes[i];
+            }
+
             function getStatusCompleteHandler(data)
             {
                 $("table.file-table > tbody > tr").remove();
 
-                $("#btn-parent").attr("disabled" , data.isRoot);
+                $("input.btn-parent").attr("disabled" , data.isRoot);
 
                 data.files.sort(function(item1 , item2){return item1.isFile - item2.isFile;}).forEach(function(item){
 
-                    var newRow = $("<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>");
+                    var newRow = $("tr.row-templete").clone().removeClass("row-templete");
                     newRow.data("name" , item.name);
                     newRow.data("isFile" , item.isFile);
 
-
-
-                    // CheckBox
-                    var checkBox = $("<input name='select' type='checkbox'>");
-                    newRow.find("td:nth-child(1)").append(checkBox);
-
-                    // FileName
-                    var itemImage = $("<img>");
-
-                    if(item.isFile == false)
-                        itemImage.attr("src" , "./image/folder.png");
+                    if(item.isFile === false)
+                    {
+                        $("td.col-name", newRow).css("cursor" , "hand");
+                        $("td.col-name > img", newRow).attr("src", "./image/folder.png");
+                        $("td.col-tool > input[name='download']" , newRow).css("visibility" , "hidden");
+                    }
                     else
-                        itemImage.attr("src" , "./image/file.png");
+                    {
+                        $("td.col-name > img", newRow).attr("src", "./image/file.png");
+                    }
 
-                    newRow.find("td:nth-child(2)").append(itemImage);
+                    $("td.col-name > span" , newRow).html(item.name);
+                    $("td.col-name", newRow).click(function(event){
 
+                        var data = $(this).parent("tr").data();
 
-                    var itemName = $("<span style='padding-left: 5px'></span>");
-                    itemName.html(item.name);
-
-
-                    newRow.find("td:nth-child(2)").attr("class" , "file-name");
-                    newRow.find("td:nth-child(2)").attr("isFile" , item.isFile);
-                    newRow.find("td:nth-child(2)").append(itemName);
-                    newRow.find("td:nth-child(2)").click(function(event){
-
-                        //alert( $(event.currentTarget).parent().data("isFile") );
-
-                        var name = $(event.currentTarget).parent().data("name");
-
-                        var isFile = $(event.currentTarget).parent().data("isFile");
-
-                      // if(isFile)
-                       //    $.post("./api/download" , {"name":name} , fu);
-                        //else
-                        if(isFile == false)
+                        if(data.isFile === false)
                         {
-                           $.post("./api/child" , {"directory":name} , getStatusCompleteHandler);
+                            $.post("./api/child" , {"directory":data.name} , getStatusCompleteHandler);
                         }
-
-                       //$.post("./api/child" , {"directory":$(event.currentTarget).data("directory")} , getStatusCompleteHandler);
-                       //$.post("./api/child" , {"directory":directory} , getStatusCompleteHandler);
                     });
 
                     //Size
-                    if(item.isFile)
-                        newRow.find("td:nth-child(3)").html(item.length);
+                    if(item.isFile) $("td.col-size", newRow).html(formatBytes(item.length));
 
-                    //Tool buttons
-                    var renameBtn = $("<input type='button' value='Rename'>");
-                    renameBtn.click(function(event){
-
-                        //popup-input
+                    //Tool bar
+                    $('input[name="rename"]' , newRow).click(function(event){
                         $("#popup").show();
-
-
-                        var name = $(event.currentTarget).parent().parent().data("name");
+                        var name = $(this).parents("tr").data("name");
 
                         $("#popup").data("cmd" , "rename");
                         $("#popup").data("target" , name);
-
                         $("#popup-input-text").val(name);
                     });
-                    newRow.find("td:nth-child(6)").append(renameBtn);
 
-
-                    var downBtn = $("<input type='button' value='Download'>");
-
-                    if(item.isFile == false)
-                        downBtn.css("visibility" , "hidden");
-
-                    downBtn.click(function(event){
-                        var name = $(event.currentTarget).parent().parent().data("name");
+                    $('input[name="download"]' , newRow).click(function(event){
+                        var name = $(this).parents("tr").data("name");
                         $("#form-download > input[name='name']").attr("value" , name);
                         $("#form-download").submit();
                     });
-
-
-
-                    newRow.find("td:nth-child(6)").append(downBtn);
-
 
                     $("table.file-table > tbody").append(newRow);
                 });
 
                 $("table.file-table > tbody > tr:even").addClass("even-class");
+
             };
 
-            $("#btn-parent").click(function(event){
+
+
+
+            $("input.btn-parent").click(function(event){
                 $.post("./api/parent" , getStatusCompleteHandler);
             });
 
-            $("#btn-home").click(function(event){
+            $("input.btn-home").click(function(event){
                 $.post("./api/home" , getStatusCompleteHandler);
             });
 
 
-            $("#btn-copy").click(function(event){
+            $("input.btn-copy").click(function(event){
 
                 var files = [];
 
                 $("table.file-table input[name='select']:checked").each(function(index , checkbox){
 
-                    files.push($(checkbox).parent().parent().data('name'));
+                    files.push($(checkbox).parents("tr").data('name'));
                 });
 
                 $.post("./api/copy" , {"files":files.toString()} );
             });
 
-            $("#btn-move").click(function(event){
+            $("input.btn-move").click(function(event){
 
                 var files = [];
 
                 $("table.file-table input[name='select']:checked").each(function(index , checkbox){
 
-                    files.push($(checkbox).parent().parent().data('name'));
+                    files.push($(checkbox).parents("tr").data('name'));
                 });
 
                 $.post("./api/move" , {"files":files.toString()} );
             });
 
-            $("#btn-paste").click(function(event){
+            $("input.btn-paste").click(function(event){
 
                 $('html, body').css("cursor", "wait");
 
@@ -166,7 +139,7 @@
                 });
             });
 
-            $("#btn-delete").click(function(event){
+            $("input.btn-delete").click(function(event){
 
                 if(!confirm("Do you want delete?")) return;
 
@@ -174,7 +147,7 @@
 
                 $("table.file-table input[name='select']:checked").each(function(index , checkbox){
 
-                    files.push($(checkbox).parent().parent().data('name'));
+                    files.push($(checkbox).parents("tr").data('name'));
                 });
 
                 if(files.length == 0)
@@ -209,7 +182,7 @@
 
 
             //btn-addfolder
-            $("#btn-addfolder").click(function(event){
+            $("input.btn-addfolder").click(function(event){
 
                 $("#popup").show();
 
@@ -260,9 +233,19 @@
 
 <body>
 
-    파일탐색기 1.0<br><br>
+    파일탐색기 1.1<br><br>
 
-    <table class="file-table">
+    <br>
+    <input class="btn-home" type="button" value="Home">
+    <input class="btn-parent" type="button" value="Go Parent">
+    <input class="btn-delete" type="button" value="Delete">
+    <input class="btn-addfolder" type="button" value="Add Folder">
+    <input class="btn-copy" type="button" value="Copy">
+    <input class="btn-move" type="button" value="Move">
+    <input class="btn-paste" type="button" value="Paste">
+    <br>
+
+    <table class="file-table" style="margin-top: 10px">
 
         <thead>
             <th style="width: 20px"></th>
@@ -274,6 +257,7 @@
         </thead>
         <tbody>
 
+
         </tbody>
 
 
@@ -281,13 +265,13 @@
     </table>
 
     <br>
-    <input id="btn-home" type="button" value="Home">
-    <input id="btn-parent" type="button" value="Go Parent">
-    <input id="btn-delete" type="button" value="Delete">
-    <input id="btn-addfolder" type="button" value="Add Folder">
-    <input id="btn-copy" type="button" value="Copy">
-    <input id="btn-move" type="button" value="Move">
-    <input id="btn-paste" type="button" value="Paste">
+    <input class="btn-home" type="button" value="Home">
+    <input class="btn-parent" type="button" value="Go Parent">
+    <input class="btn-delete" type="button" value="Delete">
+    <input class="btn-addfolder" type="button" value="Add Folder">
+    <input class="btn-copy" type="button" value="Copy">
+    <input class="btn-move" type="button" value="Move">
+    <input class="btn-paste" type="button" value="Paste">
     <br>
     <br>
 
@@ -298,7 +282,7 @@
 
     </div>
     <br>
-    제작자 : 박근영<br>
+    작성자 : 박근영<br>
     본 프로그램은 GPL v3 라이센스의 보호를 받고 있습니다.
 
     <form id="form-download" action="./api/download" method="post" style="display: none" target="temp-frame">
@@ -325,6 +309,26 @@
     </div>
 
     <iframe name="temp-frame" style="display: none"></iframe>
+
+    <table style="display: none">
+        <tr class="row-templete">
+            <td class="col-checkbox">
+                <input name='select' type='checkbox'>
+            </td>
+            <td class="col-name">
+                <img><span style='padding-left: 5px'></span>
+            </td>
+            <td class="col-size"></td>
+            <td class="col-type"></td>
+            <td class="col-date"></td>
+            <td class="col-tool">
+                <input type='button' name="rename" value='Rename'>
+                <input type='button' name="download" value='Download'>
+            </td>
+        </tr>
+    </table>
+
+
 
 </body>
 </html>

@@ -150,6 +150,7 @@ public class APIController {
         File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
 
         file.mkdir();
+
         return true;
     }
 
@@ -251,7 +252,6 @@ public class APIController {
 
 
         }
-
 
         return true;
     }
