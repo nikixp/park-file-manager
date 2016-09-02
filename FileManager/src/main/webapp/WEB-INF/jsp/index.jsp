@@ -18,8 +18,6 @@
 
         $(document).ready(function() {
 
-            // Handler for .ready() called.
-            //alert('ready2');
 
             function formatBytes(bytes,decimals) {
                 if(bytes == 0) return '0 Byte';
@@ -29,6 +27,12 @@
                 var i = Math.floor(Math.log(bytes) / Math.log(k));
                 return Math.floor(parseFloat((bytes / Math.pow(k, i)).toFixed(dm))) + sizes[i];
             }
+
+//            $("div.toolbar-button").mouseover(function(){
+//                $(this).css("background-color" , "#545657");
+//            }).mouseout(function(){
+//                $(this).css("background-color" , "#2B2B2B");
+//            });
 
             function getStatusCompleteHandler(data)
             {
@@ -264,6 +268,18 @@
 
     </table>
 
+    <br>
+    <div>
+            <div class="toolbar-button" style="">
+                <img src="/file/image/toolbar/home.png">
+                <span class="tooltip">Home</span>
+            </div>
+            <div class="toolbar-button" style="">
+                <img src="/file/image/toolbar/home.png">
+                <span class="tooltip">Parent</span>
+            </div>
+    </div>
+    <br>
     <br>
     <input class="btn-home" type="button" value="Home">
     <input class="btn-parent" type="button" value="Go Parent">

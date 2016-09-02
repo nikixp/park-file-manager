@@ -82,3 +82,42 @@ tr.even-class
     background-color: rgb(249, 249, 249);
 }
 
+div.toolbar-button
+{
+    float: left;
+    width: 30px;
+    text-align: center;
+    cursor: default;
+    background-color: #2B2B2B;
+}
+
+div.toolbar-button:hover
+{
+    background-color: #545657;
+}
+
+div.toolbar-button > span
+{
+    color: white;
+    position: absolute;
+    z-index: 1;
+    background-color: #2B2B2B;
+}
+
+span.tooltip
+{
+    visibility: hidden;
+}
+
+div.toolbar-button:hover .tooltip
+{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-top: -10px;
+    background-color: #5C88BA;
+    visibility: visible;
+}
+
+
