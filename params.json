@@ -1,0 +1,6 @@
+{
+  "name": "Park File Manager",
+  "tagline": "Web File Manager - 웹기반 파일관리자",
+  "body": "### 웹기반 파일 관리자\r\n- 파일 업로드/다운로드\r\n- 파일 복사/이동/붙여넣기/삭제/이름변경\r\n- 폴더 생성\r\n- 홈/상위/하위 폴더 이동\r\n\r\n### Web file manager\r\n- file upload/download\r\n- file copy/move/paste/delete/rename\r\n- new folder\r\n- go home/parent/child directory\r\n\r\n### Develop environment\r\n- IntelliJ\r\n- Gradle\r\n- Spring Boot 1.4\r\n- Spring Web 4.3.2\r\n- Java 1.8\r\n- jquery 3.1\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
