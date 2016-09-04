@@ -21,7 +21,7 @@
 
             function formatBytes(bytes,decimals) {
                 if(bytes == 0) return '0 Byte';
-                var k = 1000; // or 1024 for binary
+                var k = 1024; // or 1024 for binary
                 var dm = decimals + 1 || 3;
                 var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
                 var i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -52,11 +52,14 @@
                     {
                         $("td.col-name", newRow).css("cursor" , "hand");
                         $("td.col-name > img", newRow).attr("src", "./image/folder.png");
-                        $("td.col-tool > input[name='download']" , newRow).css("visibility" , "hidden");
+                        $("option[value='download']" , newRow).remove();
                     }
                     else
                     {
                         $("td.col-name > img", newRow).attr("src", "./image/file.png");
+
+                        $("td.col-size", newRow).html(formatBytes(item.length));
+                        $("td.col-ext", newRow).html(item.extension.toLowerCase());
                     }
 
                     $("td.col-name > span" , newRow).html(item.name);
@@ -70,26 +73,33 @@
                         }
                     });
 
-                    //Size
-                    if(item.isFile) $("td.col-size", newRow).html(formatBytes(item.length));
 
-                    //Tool bar
-                    $('input[name="rename"]' , newRow).click(function(event){
-                        $("#popup").show();
-                        var name = $(this).parents("tr").data("name");
 
-                        $("#popup").data("cmd" , "rename");
-                        $("#popup").data("target" , name);
-                        $("#popup-input-text").val(name);
-                    });
 
-                    $('input[name="download"]' , newRow).click(function(event){
-                        var name = $(this).parents("tr").data("name");
-                        $("#form-download > input[name='name']").attr("value" , name);
-                        $("#form-download").submit();
-                    });
+
 
                     $("table.file-table > tbody").append(newRow);
+                });
+
+                $(".btn-actions").change(function(event){
+
+                    var name = $(this).parents("tr").data("name");
+
+                    switch( $(this).val() )
+                    {
+                        case "rename":
+                            $("#popup").show();
+                            $("#popup").data("cmd" , "rename");
+                            $("#popup").data("target" , name);
+                            $("#popup-input-text").val(name);
+                            break;
+                        case "download":
+                            $("#form-download > input[name='name']").attr("value" , name);
+                            $("#form-download").submit();
+                            break;
+                    }
+
+                    $(this).val("");
                 });
 
                 $("table.file-table > tbody > tr:even").addClass("even-class");
@@ -136,13 +146,14 @@
 
                 $('html, body').css("cursor", "wait");
 
-                $.post("./api/paste" , function(event){
+
+                $.post("./api/paste").done(function(){
                     alert('completed');
-
-                    $('html, body').css("cursor", "auto");
-
                     $.post("./api/reload" , getStatusCompleteHandler);
+                }).always(function(){
+                    $('html, body').css("cursor", "auto");
                 });
+
             });
 
             $(".btn-delete").click(function(event){
@@ -253,9 +264,9 @@
             <th style="width: 20px"></th>
             <th style="width: 200px">Name</th>
             <th style="width: 50px">Size</th>
-            <th style="width: 50px">Type</th>
+            <th style="width: 50px">Ext</th>
             <th style="width: 100px">Date</th>
-            <th style="width: 100px"></th>
+            <th style="width: 100px">Actions</th>
         </thead>
         <tbody>
 
@@ -343,12 +354,15 @@
             <td class="col-name">
                 <img><span style='padding-left: 5px'></span>
             </td>
-            <td class="col-size"></td>
-            <td class="col-type"></td>
+            <td class="col-size" style="text-align: right"></td>
+            <td class="col-ext"></td>
             <td class="col-date"></td>
             <td class="col-tool">
-                <input type='button' name="rename" value='Rename'>
-                <input type='button' name="download" value='Download'>
+                <select class="btn-actions" style="width: 100px">
+                    <option value="">-- Select --</option>
+                    <option value="rename">Rename</option>
+                    <option value="download">Download</option>
+                </select>
             </td>
         </tr>
     </table>

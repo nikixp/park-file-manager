@@ -226,6 +226,8 @@ public class APIController {
 
         List<String> names = (List<String>)session.getAttribute("names");
 
+        if(names == null) return false;
+
         for(String name : names)
         {
             File sourceFile = new File(sourcePath + FileSystems.getDefault().getSeparator() + name);
