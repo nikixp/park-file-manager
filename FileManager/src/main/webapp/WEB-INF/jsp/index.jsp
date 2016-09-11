@@ -11,27 +11,29 @@
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="Cache-Control" content="no-cache">
 <head>
-    <title>:: 파일 탐색기 1.1::</title>
+    <title>:: 파일 관리자 ::</title>
     <link rel="stylesheet" type="text/css" href="./css/default.css">
     <script src="./js/jquery/jquery-3.1.0.min.js"></script>
+    <script src="./js/utils.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function() {
 
+            $(document).ajaxStart(function(){
+                $('html, body').css("cursor", "wait");
+            });
 
-            function formatBytes(bytes,decimals) {
-                if(bytes == 0) return '0 Byte';
-                var k = 1024; // or 1024 for binary
-                var dm = decimals + 1 || 3;
-                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-                var i = Math.floor(Math.log(bytes) / Math.log(k));
-                return Math.floor(parseFloat((bytes / Math.pow(k, i)).toFixed(dm))) + sizes[i];
-            }
+            $(document).ajaxComplete(function(){
+                $('html, body').css("cursor", "auto");
+            });
+
 
             $("#top-toolbar-container").append( $("#toolbar").clone() );
 
             function getStatusCompleteHandler(data)
             {
+                //CURSOR.normal();
+
                 $("table.file-table > tbody > tr").remove();
 
 
@@ -50,7 +52,7 @@
 
                     if(item.isFile === false)
                     {
-                        $("td.col-name", newRow).css("cursor" , "hand");
+//                        $("td.col-name", newRow).css("cursor" , "hand");
                         $("td.col-name > img", newRow).attr("src", "./image/folder.png");
                         $("option[value='download']" , newRow).remove();
                     }
@@ -65,10 +67,12 @@
                     $("td.col-name > span" , newRow).html(item.name);
                     $("td.col-name", newRow).click(function(event){
 
+
                         var data = $(this).parent("tr").data();
 
                         if(data.isFile === false)
                         {
+//                            CURSOR.busy();
                             $.post("./api/child" , {"directory":data.name} , getStatusCompleteHandler);
                         }
                     });
@@ -95,7 +99,10 @@
                             break;
                         case "download":
                             $("#form-download > input[name='name']").attr("value" , name);
+                            $("#form-download").attr("action" , "./api/download");
                             $("#form-download").submit();
+
+                                //./api/download
                             break;
                     }
 
@@ -144,14 +151,13 @@
 
             $(".btn-paste").click(function(event){
 
-                $('html, body').css("cursor", "wait");
-
+//                CURSOR.busy();
 
                 $.post("./api/paste").done(function(){
                     alert('completed');
                     $.post("./api/reload" , getStatusCompleteHandler);
                 }).always(function(){
-                    $('html, body').css("cursor", "auto");
+//                    CURSOR.normal();
                 });
 
             });
@@ -177,6 +183,27 @@
                     alert('Delete success.');
                     $.post("./api/reload" , getStatusCompleteHandler);
                 });
+            });
+
+            $(".btn-archive").click(function(event){
+
+                var files = [];
+
+                $("table.file-table input[name='select']:checked").each(function(index , checkbox){
+
+                    files.push($(checkbox).parents("tr").data('name'));
+                });
+
+                if(files.length == 0)
+                {
+                    alert("No selected file.")
+                    return;
+                }
+
+                $("#form-download > input[name='files']").attr("value" , files.toString());
+                $("#form-download").attr("action" , "./api/archive");
+                $("#form-download").submit();
+
             });
 
             $("#form-upload").submit(function(event){
@@ -227,10 +254,6 @@
                         break;
                         break;
                 }
-
-                //$("#popup").data("cmd" , "rename");
-                //$("#popup").data("target" , name);
-
             });
 
             $("#btn-popup-cancel").click(function(event){
@@ -250,7 +273,7 @@
 
 <body>
 
-    파일탐색기 1.1<br><br>
+    <br><br>
 
     <div id="top-toolbar-container" style="margin-bottom: 10px">
 
@@ -307,6 +330,10 @@
                 <img src="/file/image/toolbar/delete.png">
                 <span>Delete</span>
             </div>
+            <div class="toolbar-button btn-archive">
+                <img src="/file/image/toolbar/archive.png">
+                <span>Zip Download</span>
+            </div>
     </div>
     <br>
     <br>
@@ -323,6 +350,7 @@
 
     <form id="form-download" action="./api/download" method="post" style="display: none" target="temp-frame">
         <input type="text" name="name">
+        <input type="text" name="files">
     </form>
 
     <div id="popup" class="popup" style="position: absolute;top: 0px;left: 0px;width: 100%;height: 100%;display: none">

@@ -4,22 +4,25 @@ import com.park.domains.NativeFile;
 import com.park.domains.Status;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by com on 2016-08-11.
@@ -27,7 +30,9 @@ import java.util.List;
  * 이메일 : mash9@naver.com
  */
 @Controller
-public class APIController {
+public class APIController
+{
+    private String SEPARATOR = FileSystems.getDefault().getSeparator();
 
     @Value(value = "${file.explorer.home}")
     private String documentHome;
@@ -51,9 +56,13 @@ public class APIController {
         return retn;
     }
 
+
+
     @RequestMapping(path = "/api/reload" , method = RequestMethod.POST)
     public @ResponseBody Status reload(HttpSession session)
     {
+
+
         String currentPath = (String)session.getAttribute("current_path");
 
         File file = new File(currentPath);
@@ -69,7 +78,7 @@ public class APIController {
     {
         String currentPath = (String)session.getAttribute("current_path");
 
-        currentPath += FileSystems.getDefault().getSeparator() + directory;
+        currentPath += SEPARATOR + directory;
 
 
 
@@ -90,7 +99,7 @@ public class APIController {
 
         if(!documentHome.equals(currentPath))
         {
-            currentPath = currentPath.substring(0 , currentPath.lastIndexOf(FileSystems.getDefault().getSeparator()));
+            currentPath = currentPath.substring(0 , currentPath.lastIndexOf(SEPARATOR));
         }
 
         File file = new File(currentPath);
@@ -109,7 +118,7 @@ public class APIController {
         String currentPath = (String)session.getAttribute("current_path");
 
         names.stream().forEach((String name) -> {
-            String path = currentPath + FileSystems.getDefault().getSeparator() + name;
+            String path = currentPath + SEPARATOR + name;
 
             File file = new File(path);
 
@@ -130,15 +139,66 @@ public class APIController {
         return true;
     }
 
+    @RequestMapping(path = "/api/archive" , method = RequestMethod.POST)
+    public @ResponseBody boolean archive(@RequestParam(value = "files") List<String> names, HttpSession session, HttpServletResponse response) throws Exception
+    {
+        String currentPath = (String)session.getAttribute("current_path");
+
+        String fileName;
+
+        if(currentPath.indexOf(SEPARATOR) < 0)
+        {
+            fileName = "download.zip";
+        }
+        else
+        {
+            fileName = currentPath.substring(currentPath.lastIndexOf(SEPARATOR) + 1 , currentPath.length()) + ".zip";
+        }
+
+        response.setContentType("application/zip");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\";");
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream);
+
+        for(String name : names)
+        {
+            String path = currentPath + SEPARATOR + name;
+            File file = new File(path);
+
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            IOUtils.copy(fileInputStream, zipOutputStream);
+
+            fileInputStream.close();
+            zipOutputStream.closeEntry();
+        }
+
+        if (zipOutputStream != null) {
+            zipOutputStream.finish();
+            zipOutputStream.flush();
+            IOUtils.closeQuietly(zipOutputStream);
+        }
+        IOUtils.closeQuietly(bufferedOutputStream);
+        IOUtils.closeQuietly(byteArrayOutputStream);
+
+        response.getOutputStream().write( byteArrayOutputStream.toByteArray() );
+        return true;
+    }
+
+
     @RequestMapping(path = "/api/rename" , method = RequestMethod.POST)
     public @ResponseBody boolean rename(@RequestParam(value = "name") String name, @RequestParam(value = "newName") String newName, HttpSession session)
     {
         String currentPath = (String)session.getAttribute("current_path");
-        File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+        File file = new File(currentPath + SEPARATOR + name);
 
         assert file.exists();
 
-        file.renameTo(new File(currentPath + FileSystems.getDefault().getSeparator() + newName));
+        file.renameTo(new File(currentPath + SEPARATOR + newName));
         return true;
     }
 
@@ -147,7 +207,7 @@ public class APIController {
     {
         String currentPath = (String)session.getAttribute("current_path");
 
-        File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+        File file = new File(currentPath + SEPARATOR + name);
 
         file.mkdir();
 
@@ -159,9 +219,9 @@ public class APIController {
     {
         String currentPath = (String)session.getAttribute("current_path");
 
-        File file = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+        File file = new File(currentPath + SEPARATOR + name);
 
-        assert file.exists();
+        //assert file.exists();
 
         String fileName = URLEncoder.encode(file.getName() , "utf-8").replaceAll("\\+" , "%20");
 
@@ -183,7 +243,7 @@ public class APIController {
     public @ResponseBody boolean upload(@RequestParam(value = "file") MultipartFile file, HttpSession session) throws Exception
     {
         String fileName = FilenameUtils.getName(file.getOriginalFilename());
-        String path = session.getAttribute("current_path") + FileSystems.getDefault().getSeparator() + fileName;
+        String path = session.getAttribute("current_path") + SEPARATOR + fileName;
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(file.getBytes());
         FileOutputStream outputStream = new FileOutputStream(path);
@@ -230,12 +290,12 @@ public class APIController {
 
         for(String name : names)
         {
-            File sourceFile = new File(sourcePath + FileSystems.getDefault().getSeparator() + name);
+            File sourceFile = new File(sourcePath + SEPARATOR + name);
 
 
             if(sourceFile.isFile())
             {
-                File targetFile = new File(currentPath + FileSystems.getDefault().getSeparator() + name);
+                File targetFile = new File(currentPath + SEPARATOR + name);
 
                 if("copy".equals(command))
                     FileUtils.copyFile(sourceFile , targetFile);

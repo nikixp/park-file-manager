@@ -46,11 +46,6 @@ table.file-table > tbody > tr > td
     padding-left: 5px;
 }
 
-table.file-table td.file-name[isFile="false"]
-{
-    cursor: hand;
-}
-
 div.popup
 {
     z-index: 100;
